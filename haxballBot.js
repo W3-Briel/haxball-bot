@@ -7,8 +7,8 @@ const room = HBInit({
     playerName: "AB | BOT DE MIERDA"
 });
 
-room.setDefaultStadium("Big");
-room.setScoreLimit(5);
+room.setDefaultStadium("Small");
+room.setScoreLimit(3);
 room.setTimeLimit(0);
 
 // If there are no admins left in the room give admin to one of the remaining players.
@@ -34,6 +34,7 @@ room.onPlayerChat = function(player, mensaje) {
     console.log(player.name);
     console.log(player.admin);
 
+    //remplazar esta estructura por un switch
     if (mensaje.startsWith("!")) {
         mensaje = mensaje.substr(1);
         let args = mensaje.split(" ");
@@ -45,8 +46,82 @@ room.onPlayerChat = function(player, mensaje) {
             } else {
                 room.sendAnnouncement("Contraseña Invalida bobo", player.id, 0xff5447, "italic", 2);
             }
-          }
-      }
+        }
+    }
+}
+
+// asist y goleador
+let lastkicker;
+let lastkicker2;
+
+let partidoAsist;
+let partidoGol;
+let partidoGolEncontra;
+
+room.onGameStart = function(byPlayer){
+    lastkicker2 = {
+        name: "",
+        team: undefined
+    };
+    lastkicker = {
+        name: "",
+        team: undefined
+    };
+
+    partidoAsist = [];
+    partidoGol = [];
+    partidoGolEncontra = [];
+
+}
+
+room.onPlayerBallKick = function(player){
+    if(lastkicker.name == player.name){
+        lastkicker2.name = "";
+
+        lastkicker = {
+            name: player.name,
+            team: room.getPlayerList().filter( l => l.name == player.name)[0].team
+        }
+
+    } else {
+        lastkicker2 = lastkicker;
+        
+        lastkicker = {
+            name: player.name,
+            team: room.getPlayerList().filter( l => l.name == player.name)[0].team
+        };
+    }
+}
+
+room.onTeamGoal = function(team) {
+    const festejos = [
+        "¡Qué golazo de " + lastkicker.name + "!",
+        "¡" + lastkicker.name + " está imparable!",
+        "¡" + lastkicker.name + " lo hizo de nuevo!",
+        "¡Golazo de " + lastkicker.name + "! ¡El proximo maradona!",
+        "¡Golazo de el goat " + lastkicker.name,
+        "¡" + lastkicker.name + " deja un poco para los demas!"
+    ];
+    
+    const mensajeAleatorio = festejos[Math.floor(Math.random() * festejos.length)];
+    
+    if (lastkicker.team != team){ // gol encontra
+
+        partidoGolEncontra.push(lastkicker.name)
+        room.sendAnnouncement("este "+ lastkicker.name +" es un boludo", null, 0xffff82, "italic", 0);
+    }else{
+        if (lastkicker2.name === "") {
+            
+            partidoGol.push(lastkicker.name)
+            room.sendAnnouncement(mensajeAleatorio, null, 0xffff82, "italic", 0);
+        } else {
+            partidoGol.push(lastkicker.name)
+            partidoAsist.push(lastkicker2.name)
+            
+            room.sendAnnouncement(mensajeAleatorio + ", Asistencia de " + lastkicker2.name, null, 0xffff82, "italic", 0);
+        }
+    }
+    
 }
 
 //codigito copiado, test
@@ -63,10 +138,52 @@ let RecSistem = {
     getScoresTime: time=>{
         return ~~(Math.trunc(time) / 60) + ":" + (Math.trunc(time)%60).toString().padStart(2, '0');
     },
-    sendDiscordWebhook: scores=>{
-        let
-        red = room.getPlayerList().filter((player)=>player.team == 1).map((player)=> player.name),
-        blue = room.getPlayerList().filter((player)=>player.team == 2).map((player)=> player.name);
+    sendDiscordWebhook: (scores, pGol,pGolEncontra,pAsist)=>{
+        let red = room.getPlayerList().filter((player)=>player.team == 1).map((player)=> {
+            let name = player.name;
+            pGol.forEach(p => {
+                if (player.name == p){
+                    name+= " ⚽"
+                }
+            });
+
+            pGolEncontra.forEach(p => {
+                if (player.name == p){
+                    name+= " 🤡"
+                }
+            });
+
+            pAsist.forEach(p => {
+                if (player.name == p){
+                    name+= " 👟"
+                }
+            });
+
+            return name;
+        })
+
+        let blue = room.getPlayerList().filter((player)=>player.team == 2).map((player)=> {
+            let name = player.name;
+            pGol.forEach(p => {
+                if (player.name == p){
+                    name+= " ⚽"
+                }
+            });
+
+            pGolEncontra.forEach(p => {
+                if (player.name == p){
+                    name+= " 🤡"
+                }
+            });
+
+            pAsist.forEach(p => {
+                if (player.name == p){
+                    name+= " 👟"
+                }
+            });
+
+            return name;
+        });
 
         let form = new FormData();
         form.append(null, new File( [room.stopRecording()], `HBReplay-${RecSistem.getCustomDate()}.hbr2`, {"type": "text/plain"} ));
@@ -107,41 +224,5 @@ let RecSistem = {
 };
 
 room.onTeamVictory = function(scores) {
-    // stats[0] += 1;
-    // localStorage.setItem(auth, JSON.stringify(stats));
-    var reds = room.getPlayerList().filter(p => p.team == 1);
-    var blues = room.getPlayerList().filter(p => p.team == 2);
-    // if(scores.red > scores.blue){
-    //     reds.forEach(r => gameWinned())
-    //     blues.forEach(b => gameLosed())
-    // }else {
-    //     blues.forEach(b => gameWinned())
-    //     reds.forEach(r => gameLosed())
-    // }
-    // var redGoal = room.getScores().red
-    // var blueGoal = room.getScores().blue
-    // var scores = room.getScores();
-    // if (redGoal > blueGoal) {
-    //     if(blueGoal == 0){
-    //         if(redTeam[0] != ""){
-    //             room.sendAnnouncement("🏆 " + redTeam[0] + " Kept A CS!",null,colors.yellow,'bold',2);
-    //         }
-    //     }
-    //     room.sendAnnouncement("🔴Red Team Won🔴",null,colors.red,'bold',2)
-    //     // redStreak = redStreak + 1
-    //     // blueStreak = 0
-    //     // room.sendAnnouncement("🔴Read Team's Win Streak:  " + redStreak,null,colors.white,'bold',2)
-    // } else if (blueGoal > redGoal) {
-    //     if(redGoal == 0){
-    //         if(blueTeam[0] != ""){
-    //             room.sendAnnouncement("🏆 " + blueTeam[0] + " Kept A CS!",null,colors.yellow,'bold',2);
-    //         }   
-    //     }
-    //     room.sendAnnouncement("🔵Blue Team Won🔵",null,colors.blue,'bold',2)
-    //     // blueStreak = blueStreak + 1
-    //     // redStreak = 0
-    //     // room.sendAnnouncement("🔵Blue Team's Win Streak " + blueStreak,null,colors.white,'bold',2)
-    // }
-    RecSistem.sendDiscordWebhook(scores);
-    // kickOff = false;
+    RecSistem.sendDiscordWebhook(scores,partidoGol,partidoGolEncontra,partidoAsist);
 }
