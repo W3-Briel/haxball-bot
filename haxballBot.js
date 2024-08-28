@@ -29,23 +29,30 @@ room.onPlayerLeave = function(player) {
 }
 
 //codigo copiado test admin
-room.onPlayerChat = function(player, mensaje) {
-    console.log(player.id);
-    console.log(player.name);
-    console.log(player.admin);
-
+room.onPlayerChat = function(player, msg) {
+    let log = {
+        "ID": player.id,
+        "Name": player.name,
+        "isAdmin": player.admin
+    };
+    console.log(log)
+    
     //remplazar esta estructura por un switch
-    if (mensaje.startsWith("!")) {
-        mensaje = mensaje.substr(1);
-        let args = mensaje.split(" ");
-        args[0] = args[0].toLowerCase();
+    if (msg.startsWith("!")) {
+        let textMsg = msg.substr(1).split(" ");
+        let commandName = textMsg[0] && textMsg[0].toLowerCase();
+        let commandArgs = textMsg[1] && textMsg[1].toLowerCase();
 
-        if (args[0] === "admin") {
-            if (args[1] && args[1].toLowerCase() === "david") {
-                room.setPlayerAdmin(player.id, true);
-            } else {
-                room.sendAnnouncement("Contraseña Invalida bobo", player.id, 0xff5447, "italic", 2);
-            }
+        switch (commandName){
+            case "admin":
+                if (commandArgs == "mono1"){
+                    room.setPlayerAdmin(player.id,true)
+                } else {
+                    room.sendAnnouncement("estas equivocado che, esa no es la contra.", player.id,0xff5447, "italic", 2)
+                }
+                break;
+            default:
+                room.sendAnnouncement("no reconozco ese comando, disculpa.", player.id,0xff5447, "italic", 2)
         }
     }
 }
