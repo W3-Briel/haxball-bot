@@ -123,6 +123,31 @@ room.onTeamGoal = function(team) {
     }
     
 }
+// funcion -> nombres con stats
+
+let nameStats = (playerName,pGol,pGolEncontra,pAsist)=>{
+    let name = playerName;
+            pGol.forEach(p => {
+                if (playerName == p){
+                    name+= " ⚽"
+                }
+            });
+
+            pGolEncontra.forEach(p => {
+                if (playerName == p){
+                    name+= " 🤡"
+                }
+            });
+
+            pAsist.forEach(p => {
+                if (playerName == p){
+                    name+= " 👟"
+                }
+            });
+    
+    return name;
+}
+
 
 //codigito copiado, test
 let sendRecWebhookURL = "https://discord.com/api/webhooks/1277088341791346749/gLNy0T62oS4nVt6qQUb6VvdROE7_XpUF7FeIDLl1c8vrYoC0JOyx4KfhUfDFJQZ-N8RY"
@@ -139,51 +164,9 @@ let RecSistem = {
         return ~~(Math.trunc(time) / 60) + ":" + (Math.trunc(time)%60).toString().padStart(2, '0');
     },
     sendDiscordWebhook: (scores, pGol,pGolEncontra,pAsist)=>{
-        let red = room.getPlayerList().filter((player)=>player.team == 1).map((player)=> {
-            let name = player.name;
-            pGol.forEach(p => {
-                if (player.name == p){
-                    name+= " ⚽"
-                }
-            });
+        let red = room.getPlayerList().filter((player)=>player.team == 1).map((player)=> nameStats(player.name,pGol,pGolEncontra,pAsist))
 
-            pGolEncontra.forEach(p => {
-                if (player.name == p){
-                    name+= " 🤡"
-                }
-            });
-
-            pAsist.forEach(p => {
-                if (player.name == p){
-                    name+= " 👟"
-                }
-            });
-
-            return name;
-        })
-
-        let blue = room.getPlayerList().filter((player)=>player.team == 2).map((player)=> {
-            let name = player.name;
-            pGol.forEach(p => {
-                if (player.name == p){
-                    name+= " ⚽"
-                }
-            });
-
-            pGolEncontra.forEach(p => {
-                if (player.name == p){
-                    name+= " 🤡"
-                }
-            });
-
-            pAsist.forEach(p => {
-                if (player.name == p){
-                    name+= " 👟"
-                }
-            });
-
-            return name;
-        });
+        let blue = room.getPlayerList().filter((player)=>player.team == 2).map((player)=> nameStats(player.name,pGol,pGolEncontra,pAsist));
 
         let form = new FormData();
         form.append(null, new File( [room.stopRecording()], `HBReplay-${RecSistem.getCustomDate()}.hbr2`, {"type": "text/plain"} ));
