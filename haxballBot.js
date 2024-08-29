@@ -30,14 +30,14 @@ room.onPlayerLeave = function(player) {
 
 //codigo copiado test admin
 room.onPlayerChat = function(player, msg) {
+    // capaz no hace falta el log??
     let log = {
         "ID": player.id,
         "Name": player.name,
         "isAdmin": player.admin
     };
     console.log(log)
-    
-    //remplazar esta estructura por un switch
+    // refactorizar este if para que tambien capte el "t" del teamchat y no use el split
     if (msg.startsWith("!")) {
         let textMsg = msg.substr(1).split(" ");
         let commandName = textMsg[0] && textMsg[0].toLowerCase();
@@ -51,6 +51,10 @@ room.onPlayerChat = function(player, msg) {
                     room.sendAnnouncement("estas equivocado che, esa no es la contra.", player.id,0xff5447, "italic", 2)
                 }
                 break;
+            case "bb":
+                room.kickPlayer(player.id, "bueno chau", false); break;
+            case "ayuda":
+                room.sendAnnouncement("los comandos son:\t !admin [pass]\t !ayuda\t !bb" , player.id,0x00ff00, "nomal", 2); break;
             default:
                 room.sendAnnouncement("no reconozco ese comando, disculpa.", player.id,0xff5447, "italic", 2)
         }
@@ -214,5 +218,5 @@ let RecSistem = {
 };
 
 room.onTeamVictory = function(scores) {
-    RecSistem.sendDiscordWebhook(scores,partidoGol,partidoGolEncontra,partidoAsist);
+    RecSistem.sendDiscordWebhook(scores,partidoGol,partidoGolEncontra,partidoAsist); // repensar cuando enviar al discord, puede fallar si meten un gol y sacan al jugador.
 }

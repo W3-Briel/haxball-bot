@@ -2,12 +2,14 @@
 
 
 # caracteristicas
-* recsistem mediante webhook
+* recsistem - webhook - discord
+* team chat - t {msg}
 
 # comandos a agregar
 
-* !ayuda / !help
-* !admin
+* !ayuda
+* !bb
+* !admin {pass}
 * !swap
 * !p
 * !map5
