@@ -10,6 +10,8 @@
 * !ayuda
 * !bb
 * !admin {pass}
+* !votekick {@usuario}
 * !swap
-* !p
 * !map5
+* !p
+* !up
