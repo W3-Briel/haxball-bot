@@ -15,3 +15,6 @@
 * !map5
 * !p
 * !up
+
+
+hay que mejorar el tema del recsisctems, hay bugs.... no se tampoco si sea necesario.
