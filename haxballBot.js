@@ -50,13 +50,30 @@ room.onPlayerChat = function(player, msg) {
                 } else {
                     room.sendAnnouncement("estas equivocado che, esa no es la contra.", player.id,0xff5447, "italic", 2)
                 }
-                break;
+
+                return false;
             case "bb":
-                room.kickPlayer(player.id, "bueno chau", false); break;
+                room.kickPlayer(player.id, "bueno chau", false);
+                return false;
+            case "switch":
+                if (!player.admin){
+                    room.sendAnnouncement("che tenes que ser admin para usar este comando.", player.id,0xff5447, "italic", 2);
+                    return false;
+                }
+                let jugadoresId = room.getPlayerList().map(p => p.id)
+                jugadoresId.forEach((jugadorId)=>{
+                    let teamActual = room.getPlayer(jugadorId).team
+                    if (teamActual == 1) room.setPlayerTeam(jugadorId, 2)
+                    if (teamActual == 2) room.setPlayerTeam(jugadorId, 1)
+                })
+                room.sendAnnouncement("cambiando jugadores de lados!")
+                return false;
             case "ayuda":
-                room.sendAnnouncement("los comandos son:\t !admin [pass]\t !ayuda\t !bb" , player.id,0x00ff00, "nomal", 2); break;
+                room.sendAnnouncement("los comandos son:\t !admin [pass]\t !ayuda\t !bb\t !switch" , player.id,0x00ff00, "nomal", 2);
+                return false;
             default:
                 room.sendAnnouncement("no reconozco ese comando, disculpa.", player.id,0xff5447, "italic", 2)
+                return false;
         }
     }
 }
