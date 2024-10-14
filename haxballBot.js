@@ -55,7 +55,7 @@ room.onPlayerChat = function(player, msg) {
             case "bb":
                 room.kickPlayer(player.id, "bueno chau", false);
                 return false;
-            case "switch":
+            case "swap":
                 if (!player.admin){
                     room.sendAnnouncement("che tenes que ser admin para usar este comando.", player.id,0xff5447, "italic", 2);
                     return false;
@@ -69,7 +69,7 @@ room.onPlayerChat = function(player, msg) {
                 room.sendAnnouncement("cambiando jugadores de lados!")
                 return false;
             case "ayuda":
-                room.sendAnnouncement("los comandos son:\t !admin [pass]\t !ayuda\t !bb\t !switch" , player.id,0x00ff00, "nomal", 2);
+                room.sendAnnouncement("los comandos son:\t !admin [pass]\t !ayuda\t !bb\t !swap" , player.id,0x00ff00, "nomal", 2);
                 return false;
             default:
                 room.sendAnnouncement("no reconozco ese comando, disculpa.", player.id,0xff5447, "italic", 2)
