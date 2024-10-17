@@ -71,6 +71,9 @@ room.onPlayerChat = function(player, msg) {
             case "ayuda":
                 room.sendAnnouncement("los comandos son:\t !admin [pass]\t !ayuda\t !bb\t !swap" , player.id,0x00ff00, "nomal", 2);
                 return false;
+            case "bb":
+                room.kickPlayer(player.id,"hasta luego che, cuidate.");
+                return false;
             default:
                 room.sendAnnouncement("no reconozco ese comando, disculpa.", player.id,0xff5447, "italic", 2)
                 return false;
