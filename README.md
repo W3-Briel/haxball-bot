@@ -3,15 +3,15 @@
 
 # caracteristicas
 * recsistem - webhook - discord
-* team chat - t {msg}
+* team chat - t {msg} ❌
 
 # comandos a agregar
 * !admin {pass}
-* !ayuda
-* !swap
-* !bb
+* !ayuda 
+* !swap ❌
+* !bb ❌
 
-# seleccionar mapa
+# seleccionar mapa ❌
 * !train1
 * !tranin2
 * !map5
@@ -20,7 +20,7 @@
 # grabar ofi
 * !go // todos los jugadores en partido, deberian poner !go para arrancar.
 
-# en ofis
+# en ofis ❌
 * !resumen
 * !df
 
